@@ -1,0 +1,285 @@
+class Post
+{
+string _title;
+string _text;
+
+public:
+
+void SetTitle(string title);
+
+void SetText(string text);
+
+string GetTitle();
+
+string GetText();
+
+Post(string title, string text);
+};
+
+void Post::SetTitle(string title)
+{
+_title = title;
+}
+
+void Post::SetText(string text)
+{
+_text = text;
+}
+
+string Post::GetTitle() 
+{ 
+return _title; 
+}
+
+string Post::GetText() 
+{ 
+return _text; 
+}
+
+Post::Post(string title, string text)
+{
+SetTitle(title);
+SetText(text);
+}
+
+//////////////////////// User - обычный пользователь
+class User
+{
+int _id;
+string _login;
+string _password;
+void SetId(int id);
+
+public:
+
+void SetLogin(string login);
+
+void SetPassword(string password);
+
+int GetId();
+
+string GetLogin();
+
+string GetPassword();
+
+User(int id, string login, string password);
+
+bool IsCorrectPassword(string password);
+};
+
+void User::SetId(int id)
+{
+_id = id;
+}
+
+void User::SetLogin(string login)
+{
+_login = login;
+}
+
+void User::SetPassword(string password)
+{
+_password = password;
+}
+
+int User::GetId() 
+{ 
+return _id; 
+}
+
+string User::GetLogin() 
+{ 
+return _login; 
+}
+
+string User::GetPassword() 
+{ 
+return _password; 
+}
+
+User::User(int id, string login, string password)
+{
+SetId(id);
+SetLogin(login);
+SetPassword(password);
+}
+
+bool User::IsCorrectPassword(string password)
+{
+return (password == _password);
+}
+//////////////////////// Paid User - пользователь с платным аккаунтом
+class PaidUser
+{
+int _id;
+string _login;
+string _password;
+Post* _posts;
+int _postsCount;
+void SetId(int id);
+
+public:
+
+void SetLogin(string login);
+
+void SetPassword(string password);
+
+void SetPosts(Post* posts, int postsCount);
+
+int GetId();
+
+string GetLogin();
+
+string GetPassword();
+
+Post* GetPosts();
+
+int GetPostsCount();
+
+PaidUser(int id, string login, string password, Post* posts, int postsCount);
+
+PaidUser(int id, string login, string password);
+
+bool IsCorrectPassword(string password);
+};
+
+void PaidUser::SetId(int id)
+{
+_id = id;
+}
+
+void PaidUser::SetLogin(string login)
+{
+_login = login;
+}
+
+void PaidUser::SetPassword(string password)
+{
+_password = password;
+}
+
+void PaidUser::SetPosts(Post* posts, int postsCount)
+{
+if (postsCount < 0)
+{
+throw exception("Posts count must be more than 0");
+}
+_posts = posts;
+_postsCount = postsCount;
+}
+
+int PaidUser::GetId() 
+{ 
+return _id; 
+}
+
+string PaidUser::GetLogin() 
+{ 
+return _login; 
+}
+
+string PaidUser::GetPassword() 
+{ 
+return _password; 
+}
+
+Post* PaidUser::GetPosts() 
+{ 
+return _posts; 
+}
+
+int PaidUser::GetPostsCount() 
+{ 
+return _postsCount; 
+}
+
+PaidUser::PaidUser(int id, string login, string password, Post* posts, int postsCount)
+{
+SetId(id);
+SetLogin(login);
+SetPassword(password);
+SetPosts(posts, postsCount);
+}
+
+PaidUser::PaidUser(int id, string login, string password):
+PaidUser(id, login, password, nullptr, 0)
+{
+
+}
+
+bool PaidUser::IsCorrectPassword(string password)
+{
+return (password == _password);
+}
+
+User* Login(User** users, int usersCount, string enteredLogin, string enteredPassword)
+{
+for(int i = 0; i < usersCount; i++)
+{
+if (users[i]->GetLogin() == enteredLogin)
+{
+if (users[i]->IsCorrectPassword(enteredPassword))
+{
+return users[i];
+}
+else
+{
+throw exception("Uncorrect password");
+}
+}
+}
+return nullptr;
+}
+
+User* Login(User** users, int usersCount, string enteredLogin, string enteredPassword)
+{
+for(int i = 0; i < usersCount; i++)
+{
+if (users[i]->GetLogin() == enteredLogin)
+{
+if (users[i]->IsCorrectPassword(enteredPassword))
+{
+return users[i];
+}
+else
+{
+throw exception("Uncorrect password");
+}
+}
+}
+return nullptr;
+}
+
+User** users = new User * []
+{
+new User(100000, "morkovka1995", "1995morkovka"),
+new User(100001, "ilon_mask", "X æ A-12"),
+new User(100002, "megazver", "password"),
+new User(100003, "yogurt", "ksTPQzSu"),
+};
+PaidUser** paidUsers = new PaidUser * []
+{
+new PaidUser(200000, "TheKnyazz", "JHPzPGFG"),
+new PaidUser(200001, "system_exe", "UgfkDGmU"),
+new PaidUser(200002, "RazorQ", "TBgRnbCP"),
+new PaidUser(200003, "schdub", "CetyQVID"),
+};
+string login = "megazver";
+string password = "password";
+User* loginedUser = Login(users, 4, login, password);
+cout << "Signed in as: " << loginedUser->GetLogin() << endl;
+login = "system_exe";
+password = "UgfkDGmU";
+PaidUser* loginedPaidUser = Login(paidUsers, 4, login, password);
+cout << "Signed in as: " << loginedPaidUser->GetLogin() << endl;
+for (int i = 0; i < 4; i++)
+{
+delete users[i];
+}
+delete[] users;
+for (int i = 0; i < 4; i++)
+{
+delete paidUsers[i];
+}
+delete[] paidUsers;
+}
